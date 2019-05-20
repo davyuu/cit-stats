@@ -1,36 +1,52 @@
 import express from 'express'
 import { fetchListPeople } from '../utils/network'
-import { Services } from '../models'
+import { People, Services } from '../models'
+import models from '../models/modelTypes'
 
 const SERVICES_LIST_ID = process.env.PLANNING_CENTER_SERVICES_LIST_ID
 
 const router = express.Router()
 
 const fetchServices = async () => {
-  const people = await fetchListPeople(SERVICES_LIST_ID)
-  return people
+  return await fetchListPeople(SERVICES_LIST_ID)
 }
 
-const createServices = people => {
-  const servicesData = people.map(person => ({
-    pcId: person.pc_id,
-    name: person.name,
-    $setOnInsert: {
-      createdAt: new Date()
+const updateServices = async missedPeople => {
+  const dbPeople = (await People.find()).map(person => person._id)
+  const newPeople = missedPeople.filter(person => dbPeople.indexOf(person.pc_id) === -1)
+
+  try {
+    const peopleData = newPeople.map(person => ({
+      _id: person.pc_id,
+      name: person.name
+    }))
+    await People.insertMany(peopleData)
+    
+    const servicesData = {
+      people: missedPeople.map(person => person.pc_id),
+      $setOnInsert: {
+        createdAt: new Date()
+      }
     }
-  }))
-  Services.create(servicesData)
+    await Services.create(servicesData)
+    
+    return {
+      people: missedPeople
+    }
+  } catch (error) {
+    return error
+  }
 }
 
 const getServices = () => {
-  return Services.find()
+  return Services.find().populate(models.people)
 }
 
 
 router.post('/update', async (_, res) => {
-  const services = await fetchServices()
-  createServices(services)
-  res.json(services)
+  const people = await fetchServices()
+  const responseData = await updateServices(people)
+  res.json(responseData)
 })
 
 router.get('/missed', async (_, res) => {

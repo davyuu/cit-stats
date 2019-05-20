@@ -9,7 +9,10 @@ const PORT = process.env.PORT || 8080
 const MONGODB_URI = process.env.MONGODB_URI
 
 if (MONGODB_URI) {
-  mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
+  mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useCreateIndex: true
+  })
   mongoose.Promise = global.Promise
 }
 

@@ -1,13 +1,13 @@
-import mongoose from 'mongoose'
-import models from './models'
-const Schema = mongoose.Schema
+import { Schema, model } from 'mongoose'
+import models from './modelTypes'
 
 const servicesSchema = new Schema({
-  pcId: String,
-  name: String
-},
-{
+  people: [{
+    type: String,
+    ref: models.people
+  }]
+}, {
   timestamps: true
 })
 
-export default mongoose.model(models.services, servicesSchema)
+export default model(models.services, servicesSchema)
