@@ -51,7 +51,7 @@ router.post('/update', async (_, res) => {
 
 router.get('/missed', async (_, res) => {
   const people = await getServices()
-  res.json(people)
+  res.json({items: people})
 })
 
 export default router

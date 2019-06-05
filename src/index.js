@@ -1,11 +1,12 @@
 import 'dotenv/config'
 import express from 'express'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import mongoose from 'mongoose'
 
 import { groups, services } from './routes'
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 3000
 const MONGODB_URI = process.env.MONGODB_URI
 
 if (MONGODB_URI) {
@@ -18,6 +19,7 @@ if (MONGODB_URI) {
 
 const app = express()
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get('/', (_, res) => {
   res.json({ message: 'pong' })
