@@ -43,7 +43,7 @@ const getServices = () => {
 }
 
 
-router.post('/update', async (_, res) => {
+router.patch('/update', async (_, res) => {
   const people = await fetchServices()
   const responseData = await updateServices(people)
   res.json(responseData)
