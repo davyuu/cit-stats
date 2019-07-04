@@ -43,15 +43,19 @@ const getServices = () => {
 }
 
 
-router.patch('/update', async (_, res) => {
+router.get('/missed', async (_, res) => {
+  console.log('getting missed services')
+  const people = await getServices()
+  res.json({items: people})
+})
+
+router.patch('/missed', async (_, res) => {
+  console.log('fetching missed services')
   const people = await fetchServices()
+  console.log('updating missed services')
   const responseData = await updateServices(people)
   res.json(responseData)
 })
 
-router.get('/missed', async (_, res) => {
-  const people = await getServices()
-  res.json({items: people})
-})
 
 export default router

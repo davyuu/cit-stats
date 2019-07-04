@@ -21,6 +21,13 @@ const app = express()
 app.use(bodyParser.json());
 app.use(cors());
 
+const myMiddleware=  (req, res, next) => {
+  console.log(`${req.method}: ${req.url}`);
+  next()
+}
+
+app.use(myMiddleware)
+
 app.get('/', (_, res) => {
   res.json({ message: 'pong' })
 })
