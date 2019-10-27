@@ -4,10 +4,10 @@
   "description": "cit stats",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node src/index.js",
-    "serve": "npm run build && npm run prod",
+    "dev": "nodemon --exec babel-node src/index.js",
+    "serve": "npm run build && npm run start",
     "build": "babel src --out-dir dist",
-    "prod": "node dist/index.js",
+    "start": "node dist/index.js",
     "patch-services": "node ./tasks/patchServices.js"
   },
   "author": "David Yu",
