@@ -1,5 +1,5 @@
 require('dotenv/config')
-const fetch = require('node-fetch')
+var fetch = require('node-fetch')
 
 const SERVER_URL = process.env.SERVER_URL
 const UPDATE_CONFIRMED_SERVICE_URL = `${SERVER_URL}/services/confirmed`

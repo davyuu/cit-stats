@@ -12,9 +12,9 @@ const router = express.Router()
 
 const updateServices = async (people, type) => {
   const dbPeople = (await People.find()).map(person => person._id)
-  const newPeople = people.filter(person => dbPeople.indexOf(person.pc_id) === -1)
 
   try {
+    const newPeople = people.filter(person => dbPeople.indexOf(person.pc_id) === -1)
     const peopleData = newPeople.map(person => ({
       _id: person.pc_id,
       name: person.name
