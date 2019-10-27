@@ -8,7 +8,7 @@
     "serve": "npm run build && npm run prod",
     "build": "babel src --out-dir dist",
     "prod": "node dist/index.js",
-    "patch-missed-services": "node ./tasks/patchMissedServices.js"
+    "patch-services": "node ./tasks/patchServices.js"
   },
   "author": "David Yu",
   "license": "ISC",
