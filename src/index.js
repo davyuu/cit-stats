@@ -12,7 +12,8 @@ const MONGODB_URI = process.env.MONGODB_URI
 if (MONGODB_URI) {
   mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useUnifiedTopology: true,
   })
   mongoose.Promise = global.Promise
 }
@@ -21,7 +22,7 @@ const app = express()
 app.use(bodyParser.json());
 app.use(cors());
 
-const myMiddleware=  (req, res, next) => {
+const myMiddleware = (req, res, next) => {
   console.log(`${req.method}: ${req.url}`);
   next()
 }
