@@ -3,17 +3,16 @@ import { fetchListPeople } from '../utils/network'
 import { People, Services } from '../models'
 import models from '../models/modelTypes'
 
-const SERVICES_LIST_ID = process.env.PLANNING_CENTER_SERVICES_LIST_ID
+const SERVICES_DECLINED_LIST_ID = process.env.PLANNING_CENTER_SERVICES_DECLINED_LIST_ID
+const SERVICES_CONFIRMED_LIST_ID = process.env.PLANNING_CENTER_SERVICES_CONFIRMED_LIST_ID
+const TYPE_CONFIRMED = 'CONFIRMED'
+const TYPE_DECLINED = 'DECLINED'
 
 const router = express.Router()
 
-const fetchServices = async () => {
-  return await fetchListPeople(SERVICES_LIST_ID)
-}
-
-const updateServices = async missedPeople => {
+const updateServices = async (people, type) => {
   const dbPeople = (await People.find()).map(person => person._id)
-  const newPeople = missedPeople.filter(person => dbPeople.indexOf(person.pc_id) === -1)
+  const newPeople = people.filter(person => dbPeople.indexOf(person.pc_id) === -1)
 
   try {
     const peopleData = newPeople.map(person => ({
@@ -23,7 +22,8 @@ const updateServices = async missedPeople => {
     await People.insertMany(peopleData)
     
     const servicesData = {
-      people: missedPeople.map(person => person.pc_id),
+      people: people.map(person => person.pc_id),
+      type,
       $setOnInsert: {
         createdAt: new Date()
       }
@@ -31,31 +31,39 @@ const updateServices = async missedPeople => {
     await Services.create(servicesData)
     
     return {
-      people: missedPeople
+      people
     }
   } catch (error) {
     return error
   }
 }
 
-const getServices = () => {
-  return Services.find().populate(models.people)
+const getServicesByType = type => {
+  return Services.find({ type }).populate(models.people)
 }
 
-
-router.get('/missed', async (_, res) => {
-  console.log('getting missed services')
-  const people = await getServices()
-  res.json({items: people})
+router.get('/confirmed', async (_, res) => {
+  const people = await getServicesByType(TYPE_CONFIRMED)
+  res.json(people)
 })
 
-router.patch('/missed', async (_, res) => {
-  console.log('fetching missed services')
-  const people = await fetchServices()
-  console.log('updating missed services')
-  const responseData = await updateServices(people)
+router.patch('/confirmed', async (_, res) => {
+  const people = await fetchListPeople(SERVICES_CONFIRMED_LIST_ID)
+  const responseData = await updateServices(people, TYPE_CONFIRMED)
+  console.log('patch confirmed', responseData)
   res.json(responseData)
 })
 
+router.get('/declined', async (_, res) => {
+  const people = await getServicesByType(TYPE_DECLINED)
+  res.json(people)
+})
+
+router.patch('/declined', async (_, res) => {
+  const people = await fetchListPeople(SERVICES_DECLINED_LIST_ID)
+  const responseData = await updateServices(people, TYPE_DECLINED)
+  console.log('patch declined', responseData)
+  res.json(responseData)
+})
 
 export default router

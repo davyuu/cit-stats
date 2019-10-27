@@ -1,10 +1,14 @@
 require('dotenv/config')
-var fetch = require('node-fetch')
+const fetch = require('node-fetch')
 
 const SERVER_URL = process.env.SERVER_URL
-const PATCH_MISSED_SERVICE_URL = `${SERVER_URL}/services/missed`
+const UPDATE_CONFIRMED_SERVICE_URL = `${SERVER_URL}/services/confirmed`
+const UPDATE_DECLINED_SERVICE_URL = `${SERVER_URL}/services/declined`
 
-console.log('fetching: ', PATCH_MISSED_SERVICE_URL)
+fetch(UPDATE_CONFIRMED_SERVICE_URL, { method: 'PATCH' })
+    .then(res => res.json())
+    .then(res => console.log('update confirmed: ', res))
 
-fetch(PATCH_MISSED_SERVICE_URL, { method: 'PATCH' })
-    .then(res => console.log(res))
+fetch(UPDATE_DECLINED_SERVICE_URL, { method: 'PATCH' })
+    .then(res => res.json())
+    .then(res => console.log('update declined: ', res))
